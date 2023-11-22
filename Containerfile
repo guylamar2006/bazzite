@@ -247,11 +247,11 @@ RUN rpm-ostree override replace \
         mesa-libglapi \
         mesa-vulkan-drivers \
         mesa-libOSMesa \
-        https://download.copr.fedorainfracloud.org/results/kylegospo/bazzite-multilib/fedora-39-x86_64/06620403-bluez/bluez-5.70-1.fc40.bazzite.0.0.git.1708.6d2818cf.x86_64.rpm \
-        https://download.copr.fedorainfracloud.org/results/kylegospo/bazzite-multilib/fedora-39-x86_64/06620403-bluez/bluez-cups-5.70-1.fc40.bazzite.0.0.git.1708.6d2818cf.x86_64.rpm \
-        https://download.copr.fedorainfracloud.org/results/kylegospo/bazzite-multilib/fedora-39-x86_64/06620403-bluez/bluez-libs-5.70-1.fc40.bazzite.0.0.git.1708.6d2818cf.x86_64.rpm \
-        https://download.copr.fedorainfracloud.org/results/kylegospo/bazzite-multilib/fedora-39-x86_64/06620403-bluez/bluez-obexd-5.70-1.fc40.bazzite.0.0.git.1708.6d2818cf.x86_64.rpm \
-        https://download.copr.fedorainfracloud.org/results/kylegospo/bazzite-multilib/fedora-39-i386/06620403-bluez/bluez-libs-5.70-1.fc40.bazzite.0.0.git.1708.6d2818cf.i686.rpm
+        https://download.copr.fedorainfracloud.org/results/kylegospo/bazzite-multilib/fedora-rawhide-x86_64/06620403-bluez/bluez-5.70-1.fc40.bazzite.0.0.git.1708.6d2818cf.x86_64.rpm \
+        https://download.copr.fedorainfracloud.org/results/kylegospo/bazzite-multilib/fedora-rawhide-x86_64/06620403-bluez/bluez-cups-5.70-1.fc40.bazzite.0.0.git.1708.6d2818cf.x86_64.rpm \
+        https://download.copr.fedorainfracloud.org/results/kylegospo/bazzite-multilib/fedora-rawhide-x86_64/06620403-bluez/bluez-libs-5.70-1.fc40.bazzite.0.0.git.1708.6d2818cf.x86_64.rpm \
+        https://download.copr.fedorainfracloud.org/results/kylegospo/bazzite-multilib/fedora-rawhide-x86_64/06620403-bluez/bluez-obexd-5.70-1.fc40.bazzite.0.0.git.1708.6d2818cf.x86_64.rpm \
+            https://download.copr.fedorainfracloud.org/results/kylegospo/bazzite-multilib/fedora-rawhide-i386/06620403-bluez/bluez-libs-5.70-1.fc40.bazzite.0.0.git.1708.6d2818cf.i686.rpm
 
 # Install Gamescope, ROCM, and Waydroid on non-Nvidia images
 RUN if grep -qv "nvidia" <<< "${IMAGE_NAME}"; then \
