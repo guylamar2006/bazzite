@@ -19,15 +19,14 @@ COPY system_files/desktop/shared system_files/desktop/${BASE_IMAGE_NAME} /
 # Add ublue packages, add needed negativo17 repo and then immediately disable due to incompatibility with RPMFusion
 COPY --from=ghcr.io/ublue-os/akmods:${AKMODS_FLAVOR}-${FEDORA_MAJOR_VERSION} /rpms /tmp/akmods-rpms
 RUN sed -i 's@enabled=0@enabled=1@g' /etc/yum.repos.d/_copr_ublue-os-akmods.repo && \
-    wget https://negativo17.org/repos/fedora-multimedia.repo -O /etc/yum.repos.d/negativo17-fedora-multimedia.repo && \
+    sed -i "0,/enabled/ s@enabled=0@enabled=1@g" /etc/yum.repos.d/negativo17-fedora-multimedia.repo && \
     rpm-ostree install \
         /tmp/akmods-rpms/kmods/*xpadneo*.rpm \
         /tmp/akmods-rpms/kmods/*xpad-noone*.rpm \
         /tmp/akmods-rpms/kmods/*xone*.rpm \
         /tmp/akmods-rpms/kmods/*openrazer*.rpm \
         /tmp/akmods-rpms/kmods/*v4l2loopback*.rpm \
-        /tmp/akmods-rpms/kmods/*wl*.rpm && \
-    rpm-ostree install \
+        /tmp/akmods-rpms/kmods/*wl*.rpm \
         /tmp/akmods-rpms/kmods/*gcadapter_oc*.rpm \
         /tmp/akmods-rpms/kmods/*nct6687*.rpm \
         /tmp/akmods-rpms/kmods/*openrgb*.rpm \
@@ -72,9 +71,6 @@ RUN rpm-ostree install \
         xrandr \
         rmlint \
         compsize \
-        ddccontrol \
-        ddccontrol-gtk \
-        ddccontrol-db \
         input-remapper \
         system76-scheduler \
         hl2linux-selinux \
@@ -257,7 +253,7 @@ RUN rpm-ostree override replace \
 RUN if grep -qv "nvidia" <<< "${IMAGE_NAME}"; then \
     rpm-ostree install \
         gamescope.x86_64 \
-        gamescope.i686 \
+        gamescope-libs.i686 \
         rocm-hip \
         rocm-opencl \
         rocm-clinfo \
@@ -390,6 +386,8 @@ RUN if grep -q "kinoite" <<< "${BASE_IMAGE_NAME}"; then \
 RUN rpm-ostree install \
     jupiter-fan-control \
     jupiter-hw-support-btrfs \
+    steamdeck-dsp \
+    galileo-mura \
     powerbuttond \
     HandyGCCS \
     vpower \
@@ -474,18 +472,22 @@ RUN /tmp/image-info.sh && \
         systemctl enable sddm.service \
     ; fi && \
     systemctl enable bazzite-autologin.service && \
-    systemctl enable jupiter-fan-control.service && \
     systemctl enable btrfs-dedup@run-media-mmcblk0p1.timer && \
-    systemctl enable vpower.service && \
     systemctl enable ds-inhibit.service && \
     systemctl enable cec-onboot.service && \
     systemctl enable cec-onpoweroff.service && \
     systemctl enable cec-onsleep.service && \
     systemctl --global enable steam-web-debug-portforward.service && \
-    systemctl --global enable sdgyrodsu.service && \
+    systemctl --global disable sdgyrodsu.service && \
     systemctl disable input-remapper.service && \
     systemctl disable ublue-update.timer && \
     systemctl disable handycon.service && \
+    systemctl disable jupiter-fan-control.service && \
+    systemctl disable vpower.service && \
+    systemctl disable jupiter-biosupdate.service && \
+    systemctl disable jupiter-controller-update.service && \
+    systemctl disable ryzenadj.service && \
+    systemctl disable batterylimit.service && \
     rm -f /usr/etc/sddm.conf && \
     rm -f /usr/etc/default/bazzite && \
     rm -rf \

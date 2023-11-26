@@ -105,33 +105,6 @@ install-fleek-themes:
       echo "Install fleek with ujust install-fleek before running ujust install-fleek-themes."
     fi
 
-# Install Homebrew for Linux
-install-brew:
-    echo "Installing homebrew ..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-# Add Homebrew to shell rc files
-install-brew-to-shell:
-    #!/usr/bin/env bash
-    set -euxo pipefail
-    echo "Adding homebrew to shell configuration"
-    touch $HOME/.zprofile
-    touch $HOME/.bash_profile
-    if grep -q "linuxbrew" $HOME/.zprofile
-    then
-      echo "Brew configuration already present in .zprofile"
-    else 
-      echo "Adding Brew configuration to .zprofile"
-      echo 'eval "$(/var/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> $HOME/.zprofile
-    fi
-    if grep -q "linuxbrew" $HOME/.bash_profile
-    then
-      echo "Brew configuration already present in .bash_profile"
-    else 
-      echo "Adding Brew configuration to .bash_profile"
-      echo 'eval "$(/var/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> $HOME/.bash_profile
-    fi
-
 # Install Greenlight xCloud and xHome streaming AppImage
 get-greenlight:
     #!/usr/bin/env bash
@@ -400,21 +373,31 @@ unhide-grub:
 # Install Deck HD BIOS
 install-deckhd-bios:
     #!/usr/bin/env bash
-    RESOLUTION=$(sudo lshw -json -c display | jq -r .[]."configuration"."resolution")
-    if [[ "${RESOLUTION}" = "1200,1920" ]]; then
+    SYS_ID="$(cat /sys/devices/virtual/dmi/id/product_name)"
+    if [[ ":Jupiter:" =~ ":$SYS_ID:" ]]; then
+      RESOLUTION=$(sudo lshw -json -c display | jq -r .[]."configuration"."resolution")
+      if [[ "${RESOLUTION}" = "1200,1920" ]]; then
         sudo systemctl mask --now jupiter-biosupdate.service
         wget -q https://deckhd.com/downloads/install.sh -O /tmp/deckhd-install.sh
         chmod +x /tmp/deckhd-install.sh
         sudo ./tmp/deckhd-install.sh
-    else
+      else
         echo "Unable to detect DeckHD. Aborting..."
+      fi
+    else
+      echo "This is only applicable to LCD Steam Decks with the DeckHD screen. Aborting..."
     fi
 
 # Enable BIOS & Firmware update services for the Steam Deck
 enable-deck-bios-firmware-updates:
     #!/usr/bin/env bash
-    sudo systemctl enable jupiter-biosupdate.service
-    sudo systemctl enable jupiter-controller-update.service
+    SYS_ID="$(cat /sys/devices/virtual/dmi/id/product_name)"
+    if [[ ":Jupiter:" =~ ":$SYS_ID:" || ":Galileo:" =~ ":$SYS_ID:" ]]; then
+      sudo systemctl enable jupiter-biosupdate.service
+      sudo systemctl enable jupiter-controller-update.service
+    else
+      echo "This is only applicable to Valve's Steam Deck. Aborting..."
+    fi
 
 # Disable Steam Deck BIOS updates
 disable-bios-updates:
