@@ -431,6 +431,7 @@ RUN if grep -q "kinoite" <<< "${BASE_IMAGE_NAME}"; then \
     sed -i '/<entry name="favorites" type="StringList">/,/<\/entry>/ s/<default>[^<]*<\/default>/<default>preferred:\/\/browser,steam.desktop,net.lutris.Lutris.desktop,systemsettings.desktop,org.kde.dolphin.desktop,org.kde.kate.desktop,org.gnome.Ptyxis.desktop,org.kde.discover.desktop,system-update.desktop<\/default>/' /usr/share/plasma/plasmoids/org.kde.plasma.kickoff/contents/config/main.xml && \
     sed -i 's@\[Desktop Action new-window\]@\[Desktop Action new-window\]\nX-KDE-Shortcuts=Ctrl+Alt+T@g' /usr/share/applications/org.gnome.Ptyxis.desktop && \
     sed -i 's@Exec=ptyxis@Exec=kde-ptyxis@g' /usr/share/applications/org.gnome.Ptyxis.desktop && \
+    sed -i 's@Keywords=@Keywords=konsole;@g' /usr/share/applications/org.gnome.Ptyxis.desktop && \
     cp /usr/share/applications/org.gnome.Ptyxis.desktop /usr/share/kglobalaccel/org.gnome.Ptyxis.desktop && \
     sed -i 's@\[Desktop Entry\]@\[Desktop Entry\]\nNoDisplay=true@g' /usr/share/applications/org.kde.konsole.desktop && \
     sed -i 's@\[Desktop Entry\]@\[Desktop Entry\]\nNoDisplay=true@g' /usr/share/applications/yad-icon-browser.desktop && \
@@ -794,8 +795,7 @@ COPY --from=ghcr.io/ublue-os/akmods-nvidia:${AKMODS_FLAVOR}-${FEDORA_MAJOR_VERSI
 COPY system_files/nvidia/shared system_files/nvidia/${BASE_IMAGE_NAME} /
 
 # Remove everything that doesn't work well with NVIDIA
-RUN rm -f /usr/bin/waydroid-choose-gpu && \
-    rpm-ostree override remove \
+RUN rpm-ostree override remove \
         rocm-hip \
         rocm-opencl \
         rocm-clinfo && \
