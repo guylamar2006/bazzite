@@ -53,7 +53,7 @@ else
   # Rebuild current initramfs (this will add any new configs added to /etc/dracut.conf.d/) then reboot
   echo "Initramfs rebuild triggered, using: $INITRAMFS_BAZZITE_ARGS $INITRAMFS_CUSTOM_ARGS"
   plymouth display-message --text="Updating initramfs - Please wait, this may take a while" || true
-  rpm-ostree initramfs --enable "$INITRAMFS_BAZZITE_ARGS" "$INITRAMFS_CUSTOM_ARGS" --reboot
+  rpm-ostree initramfs --enable "${INITRAMFS_BAZZITE_ARGS} ${INITRAMFS_CUSTOM_ARGS}" --reboot
   exit 0 
 fi
 
@@ -274,3 +274,8 @@ echo $IMAGE_NAME > $KNOWN_IMAGE_NAME_FILE
 echo $IMAGE_FLAVOR > $KNOWN_IMAGE_FLAVOR_FILE
 echo $FEDORA_VERSION > $KNOWN_FEDORA_VERSION_FILE
 echo $IMAGE_BRANCH > $KNOWN_IMAGE_BRANCH_FILE
+
+if [[ $IMAGE_FLAVOR =~ "nvidia" ]]; then
+  echo "Nvidia image detected, rebooting to avoid screen freeze issue in 550."
+  systemctl reboot
+fi
