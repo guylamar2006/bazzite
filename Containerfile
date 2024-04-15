@@ -216,6 +216,11 @@ RUN rpm-ostree override replace \
     --from repo=updates \
         libinput \
         || true && \
+    rpm-ostree override replace \
+    --experimental \
+    --from repo=updates \
+        libopenmpt \
+        || true && \
     rpm-ostree override remove \
         glibc32 \
         || true && \
@@ -790,7 +795,6 @@ RUN wget https://raw.githubusercontent.com/ublue-os/bazzite/main/scripts/image-i
     systemctl disable vpower.service && \
     systemctl disable jupiter-biosupdate.service && \
     systemctl disable jupiter-controller-update.service && \
-    systemctl disable ryzenadj.service && \
     systemctl disable batterylimit.service && \
     rm -f /usr/etc/sddm.conf && \
     rm -f /usr/etc/default/bazzite && \
