@@ -6,6 +6,7 @@ on:
     branches:
       - testing
       - unstable
+      - patch-1
     paths-ignore:
       - "**.md"
       - "**.txt"
